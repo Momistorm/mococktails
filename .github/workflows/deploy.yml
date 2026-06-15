@@ -28,16 +28,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Node.js installieren (passend für dein Svelte-Projekt)
+     # 2. Node.js installieren (Tippfehler bei node-version korrigiert und Cache entfernt)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-node-version: 20
-          cache: 'npm'
+          node-version: 20
 
-      # 3. Projektabhängigkeiten installieren (npm ci ist sauberer für CI/CD als npm i)
+      # 3. Projektabhängigkeiten installieren (von npm ci auf npm install umgestellt)
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       # 4. SvelteKit statisch bauen (erzeugt den 'build' oder '.svelte-kit' Ordner)
       - name: Build Project
