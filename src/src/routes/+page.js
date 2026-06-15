@@ -2,11 +2,11 @@ export async function load({ fetch }) {
 	const uniqueCocktails = new Map();
 
 	//Amount of cocktails that get displayed
-	const TARGET_AMOUNT = 60;
+	const TARGET_AMOUNT = 30;
 
 	let attempts = 0;
 
-	const MAX_ATTEMPTS = 80;
+	const MAX_ATTEMPTS = 40;
 
 	try {
 		while (uniqueCocktails.size < TARGET_AMOUNT && attempts < MAX_ATTEMPTS) {
