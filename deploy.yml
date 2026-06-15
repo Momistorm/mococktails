@@ -1,0 +1,59 @@
+name: Deploy Cocktail Website
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# Erlaubt dem GitHub-Token, die Website auf GitHub Pages zu veröffentlichen
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Verhindert, dass mehrere Deployments gleichzeitig laufen
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Code aus dem Repository auschecken
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Node.js installieren (passend für dein Svelte-Projekt)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: 20
+          cache: 'npm'
+
+      # 3. Projektabhängigkeiten installieren (npm ci ist sauberer für CI/CD als npm i)
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. SvelteKit statisch bauen (erzeugt den 'build' oder '.svelte-kit' Ordner)
+      - name: Build Project
+        run: npm run build
+
+      # 5. GitHub Pages Infrastruktur im Hintergrund vorbereiten
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 6. Den gebauten Ordner als Artefakt hochladen (SvelteKit Static nutzt meistens 'build')
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'build'
+
+      # 7. Das Artefakt live ins Web stellen
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
